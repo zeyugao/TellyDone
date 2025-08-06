@@ -1,4 +1,4 @@
-from typing import List, Dict, Optional
+from typing import Dict, Optional
 import yaml
 import pwd
 import os
@@ -82,10 +82,13 @@ def create_config_interactively(config_path: Optional[str] = None) -> Optional[s
                               default=False)
     interval = click.prompt("Notification interval in seconds", 
                            type=int, default=1800)
+    include_full_process_name = click.confirm("Include full process name in finish notifications?", 
+                                            default=True)
     
     config["watch"] = {
         "continuous": continuous,
-        "interval": interval
+        "interval": interval,
+        "include_full_process_name": include_full_process_name
     }
     
     # Create directory if it doesn't exist
