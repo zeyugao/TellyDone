@@ -1,7 +1,7 @@
 from typing import List
 import click
 
-from .config import get_config
+from .config import get_config, create_config_interactively
 from .plugins import execute as do_execute
 from .plugins import watch as do_watch
 
@@ -48,3 +48,12 @@ def watch(ctx, pid: int, continuous: bool, interval: int):
     config["watch"].update(watch_config)
 
     do_watch(config, pid)
+
+
+@cli.command("init", help="Interactively create configuration file")
+@click.option("-C", "--config_path", default=None, help="Config file path")
+def init_config(config_path: str):
+    result = create_config_interactively(config_path)
+    if result is None:
+        click.echo("Failed to create configuration file", err=True)
+        exit(1)
