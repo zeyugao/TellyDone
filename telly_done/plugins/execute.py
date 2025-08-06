@@ -1,6 +1,7 @@
 from typing import List, Dict
 import os
 import time
+import subprocess
 import apprise
 
 
@@ -12,15 +13,17 @@ def execute(config: Dict, args: List[str]):
         apobj.add(apprise_url)
     apobj.add(config)
 
-    command = " ".join(args)
     start_time = time.time()
-    return_value = os.system(command=command)
+    result = subprocess.run(args, capture_output=False)
+    return_value = result.returncode
     end_time = time.time()
 
     used_time = end_time - start_time
 
+    # For display purposes, join args with spaces (but we used subprocess.run for actual execution)
+    command_display = " ".join(args)
     title = "Execution FAIL" if return_value else "Execution SUCCEED"
-    content = f"""Command: {command}
+    content = f"""Command: {command_display}
     Execution time: {used_time: .2f} seconds
     Return Value: {return_value}"""
 
